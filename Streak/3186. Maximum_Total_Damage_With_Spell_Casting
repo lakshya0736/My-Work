@@ -1,0 +1,38 @@
+import java.util.*;
+
+class Solution {
+    public long maximumTotalDamage(int[] power) {
+        if (power == null || power.length == 0) return 0L;
+
+       
+        Map<Integer, Long> total = new HashMap<>();
+        for (int x : power) {
+            total.put(x, total.getOrDefault(x, 0L) + (long) x);
+        }
+
+        
+        List<Integer> vals = new ArrayList<>(total.keySet());
+        Collections.sort(vals);
+
+        int n = vals.size();
+        long[] dp = new long[n];
+        dp[0] = total.get(vals.get(0));
+
+        for (int i = 1; i < n; i++) {
+            long gain = total.get(vals.get(i));
+            int curr = vals.get(i);
+
+            
+            int j = i - 1;
+            while (j >= 0 && curr - vals.get(j) <= 2) {
+                j--;
+            }
+
+            long include = gain + (j >= 0 ? dp[j] : 0);
+            long exclude = dp[i - 1];
+            dp[i] = Math.max(include, exclude);
+        }
+
+        return dp[n - 1];
+    }
+}
