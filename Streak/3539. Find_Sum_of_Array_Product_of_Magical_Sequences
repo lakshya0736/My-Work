@@ -1,0 +1,148 @@
+// class Solution {
+//     static final int MOD = 1_000_000_007;
+
+//     public int magicalSum(int m, int k, int[] nums) {
+//         int n = nums.length;
+//         long[][] dp = new long[n+1][m+1];
+//         dp[0][0]=1;
+//         long[][] prodMul = new long[n+1][m+1];
+//         long[][] powVal = new long[n][m+1];
+//         for(int j=0; j<n; j++){
+//             powVal[j][0]=1;
+//             for(int t=1; t<=m; t++){
+//                 powVal[j][t]=powVal[j][t-1]*nums[j]%MOD;
+//             }
+//         }
+//         int[][] bitCountAdd = new int[n][n+1];
+//         for(int j=0; j<n; j++){
+//             for(int t=0; t<=m; t++){
+//                 long carry = 0;
+//                 long sum = 0;
+//                 for(int cnt =0; cnt<t; cnt++){
+//                     long add = 1L<<j;
+//                     long s = sum+add;
+//                     sum=s;
+//                 }
+//                 bitCountAdd[j][t]=Long.bitCount(sum);
+//             }
+//         }
+//         for(int i=0; i<n; i++){
+//             for(int used = 0; used<=m; used++){
+//                 if(dp[i][used]==0) continue;
+//                 long curVal = dp[i][used];
+//                 for(int t=0; used+t<=m; t++){
+//                     int newUsed= used+t;
+//                     int addBits = bitCountAdd[i][t];
+//                     dp[i+1][newUsed]=(dp[i+1][newUsed]+curVal*powVal[i][t])%MOD;
+//                 }
+//             }
+//         }
+//         long[][][] dp3 = new long[n+1][m+1][m+1];
+//         dp3[0][0][0]=1;
+//         for(int i=0; i<n; i++){
+//             for(int used=0; used<=m; used++){
+//                 for(int b=0; b<=m; b++){
+//                     long ways =dp3[i][used][b];
+//                     if(ways==0) continue;
+//                     for(int t=0; used+t<=m; t++){
+//                         int newUsed = used+t;
+//                         int addBits = bitCountAdd[i][t];
+//                         int newB=b+addBits;
+//                         if(newB>m) continue;
+//                         dp3[i+1][newUsed][newB]=(dp3[i+1][newUsed][newB]+ways*powVal[i][t])%MOD;
+//                     }
+//                 }
+//             }
+//         }
+//         long[][][] dpComb=new long[n+1][m+1][m+1];
+//         dpComb[0][0][0]=1;
+//         long[] fact=new long[m+1];
+//         long[] invFact = new long[m+1];
+//         fact[0] = 1;
+//         for(int i=1; i<=m; i++) fact[i]=fact[i-1]*i%MOD;
+//         invFact[m]=modInv(fact[m]);
+//         for(int i=m; i>=1; i--) invFact[i-1] = invFact[i]*i%MOD;
+
+//         for(int i=0; i<n; i++){
+//             for(int used=0; used<=m; used++){
+//                 for(int b=0; b<=m; b++){
+//                     long cur = dpComb[i][used][b];
+//                     if(cur==0) continue;
+//                     for(int t=0; used+t<=m; t++){
+//                         int newUsed = used+t;
+//                         int addBits = bitCountAdd[i][t];
+//                         int newB = b+addBits;
+//                         if(newB>m) continue;
+//                         long ways = cur*powVal[i][t]%MOD;
+//                         ways = ways*C(newUsed, t, fact, invFact)%MOD;
+//                         dpComb[i+1][newUsed][newB]=(dpComb[i+1][newUsed][newB]+ways)%MOD;
+//                     }
+//                 }
+//             }
+//         }
+//         long answer = dpComb[n][m][k];
+//         return (int) answer;
+//     }
+//     private long modInv(long x){
+//         return modPow(x, MOD-2);
+//     }
+//     private long modPow(long a, long e){
+//         long res=1%MOD;
+//         a%=MOD;
+//         while(e>0){
+//             if((e&1)==1) res = res*a%MOD;
+//             a=a*a%MOD;
+//             e>>=1;
+//         }
+//         return res;
+//     }
+//     private long C(int n, int r, long[] fact, long[] invFact){
+//         if(r<0||r>n)return 0;
+//         return fact[n]*invFact[r]%MOD*invFact[n-r]%MOD;
+//     }
+// }
+
+class Solution {
+    private static final int MOD = 1_000_000_007;
+
+    public int magicalSum(int m, int k, int[] nums) {
+        int n = nums.length;
+        // Precompute combinations C[n][r]
+        int[][] C = new int[m + 1][m + 1];
+        for (int i = 0; i <= m; i++) {
+            C[i][0] = 1;
+            for (int j = 1; j <= i; j++) {
+                C[i][j] = (C[i - 1][j - 1] + C[i - 1][j]) % MOD;
+            }
+        }
+
+        // Memoization array
+        Integer[][][][] memo = new Integer[m + 1][k + 1][n + 1][m + 1];
+        return dfs(m, k, 0, 0, nums, C, memo);
+    }
+
+    private int dfs(int mLeft, int kLeft, int idx, int carry, int[] nums,
+                    int[][] C, Integer[][][][] memo) {
+        if (kLeft < 0) return 0;
+        if (mLeft == 0) {
+            // When no picks left, check if number of 1 bits in carry == kLeft
+            return (Integer.bitCount(carry) == kLeft) ? 1 : 0;
+        }
+        if (idx == nums.length) return 0;
+        if (memo[mLeft][kLeft][idx][carry] != null) return memo[mLeft][kLeft][idx][carry];
+
+        long ans = 0;
+        long pow = 1; // nums[idx]^count
+        for (int count = 0; count <= mLeft; count++) {
+            long ways = (long) C[mLeft][count] * pow % MOD;
+            int newCarry = carry + count;
+            int bit = newCarry & 1;          // bit set at this position
+            int nextCarry = newCarry >> 1;   // carry to next index
+            ans = (ans + ways * dfs(mLeft - count, kLeft - bit, idx + 1, nextCarry, nums, C, memo)) % MOD;
+            pow = pow * nums[idx] % MOD;
+        }
+
+        memo[mLeft][kLeft][idx][carry] = (int) ans;
+        return (int) ans;
+    }
+}
