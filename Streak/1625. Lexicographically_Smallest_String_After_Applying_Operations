@@ -1,0 +1,23 @@
+class Solution {
+    String result;
+    public String findLexSmallestString(String s, int a, int b) {
+        result = s;
+
+        helper(s, a, b, new HashSet<>());
+        return result;
+        
+    }
+    void helper(String s, int a, int b, HashSet<String> seen){
+        if(seen.add(s)){
+            if(result.compareTo(s)>0){
+                result=s;
+            }
+            char[] chars = s.toCharArray();
+            for(int i=1; i<chars.length; i+=2){
+                chars[i] = (char) ((chars[i]-'0'+a)%10+'0');
+            }
+            helper(String.valueOf(chars), a, b, seen);
+            helper(s.substring(b)+s.substring(0,b), a, b, seen);
+        }
+    }
+}
