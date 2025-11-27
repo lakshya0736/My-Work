@@ -1,0 +1,49 @@
+class Solution {
+    public int[][] updateMatrix(int[][] mat) {
+       int rows = mat.length;
+       int cols=mat[0].length;
+       int steps=0;
+
+       int ans[][]=new int[rows][cols];
+
+
+       Queue<int[]> q=new LinkedList<>();
+
+       for(int i=0; i<rows; i++){
+        for(int j=0; j<cols; j++){
+            if(mat[i][j]==0){
+                q.add(new int[]{i,j,steps});
+                ans[i][j]=steps;
+            }
+        }
+       }
+       // for neigh
+       int dir[][]={{-1,0},{1,0},{0,-1},{0,1}};
+
+       while(q.isEmpty()==false){
+
+        int size=q.size();
+        while(size>0){
+            int arr[]=q.remove();
+
+            int currI=arr[0];
+            int currJ=arr[1];
+            int currSteps=arr[2];
+
+            for(int d[]:dir){
+                int newI=currI+d[0];
+                int newJ=currJ+d[1];
+
+                if(newI>=0 && newI<rows && newJ>=0 && newJ<cols && mat[newI][newJ]==1){
+                    mat[newI][newJ]=0;
+                    q.add(new int[]{newI, newJ, currSteps+1});
+                    ans[newI][newJ]=currSteps+1;
+
+                }
+            }
+            size--;
+        }
+       }
+       return ans;
+    }
+}
