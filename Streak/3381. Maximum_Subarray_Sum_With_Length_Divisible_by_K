@@ -1,0 +1,32 @@
+class Solution {
+    public long maxSubarraySum(int[] nums, int k) {
+        long[] prefix = new long[nums.length + 1];
+        for (int i = 0; i < nums.length; i++) {
+            prefix[i + 1] = prefix[i] + nums[i];
+        }
+
+        long[] minPrefix = new long[k];
+        boolean[] seen = new boolean[k];
+
+        for (int i = 0; i < k; i++) minPrefix[i] = Long.MAX_VALUE;
+        minPrefix[0] = 0;
+        seen[0] = true;
+
+        long ans = Long.MIN_VALUE;
+
+        for (int i = 1; i <= nums.length; i++) {
+            int mod = i % k;
+
+            if (seen[mod]) {
+                ans = Math.max(ans, prefix[i] - minPrefix[mod]);
+            }
+
+            if (!seen[mod] || prefix[i] < minPrefix[mod]) {
+                minPrefix[mod] = prefix[i];
+                seen[mod] = true;
+            }
+        }
+
+        return ans;
+    }
+}
