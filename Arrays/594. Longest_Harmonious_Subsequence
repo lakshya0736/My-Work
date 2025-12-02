@@ -1,0 +1,18 @@
+class Solution {
+    public int findLHS(int[] nums) {
+       HashMap<Integer, Integer> map = new HashMap<>();
+       Arrays.sort(nums);
+       // Build Frequency Map
+       for( int num : nums){
+        map.put(num, map.getOrDefault(num, 0)+1);
+       }
+       int longest = 0;
+       for(int x: map.keySet()){
+            if(map.containsKey(x+1)){
+                int length=map.get(x)+map.get(x+1);
+                longest=Math.max(longest, length);
+            }
+        }
+        return longest;
+    }
+}
