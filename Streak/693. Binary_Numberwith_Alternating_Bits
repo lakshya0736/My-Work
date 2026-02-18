@@ -1,0 +1,18 @@
+class Solution {
+    public boolean hasAlternatingBits(int n) {
+        while(n>0){
+            int lastbit = n & 1;
+            n = n >> 1; //shift right
+
+            if(n>0){
+                int nextbit = n & 1;
+
+                if(lastbit == nextbit){
+                    return false;
+                }
+            }
+        }
+        return true;
+        
+    }
+}
