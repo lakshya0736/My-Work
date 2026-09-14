@@ -13,16 +13,36 @@
  *     }
  * }
  */
+
+
 class Solution {
-    public static void dfspreorder(TreeNode root, ArrayList<Integer> ans){
-        if(root==null) return;
-        ans.add(root.val);
-        dfspreorder(root.left,ans);
-        dfspreorder(root.right,ans);
-    }
     public List<Integer> preorderTraversal(TreeNode root) {
+        
         ArrayList<Integer> ans = new ArrayList<>();
-        dfspreorder(root, ans);
+        Stack<TreeNode> st = new Stack<>();
+        if(root==null) return ans;
+        st.push(root);
+        while(st.size()>0){
+            TreeNode front = st.pop();
+            ans.add(front.val);
+            if(front.right!=null) st.push(front.right);
+            if(front.left!=null) st.push(front.left);
+        }
         return ans;
     }
 }
+
+
+// class Solution {
+//     public static void dfspreorder(TreeNode root, ArrayList<Integer> ans){
+//         if(root==null) return;
+//         ans.add(root.val);
+//         dfspreorder(root.left,ans);
+//         dfspreorder(root.right,ans);
+//     }
+//     public List<Integer> preorderTraversal(TreeNode root) {
+//         ArrayList<Integer> ans = new ArrayList<>();
+//         dfspreorder(root, ans);
+//         return ans;
+//     }
+// }
