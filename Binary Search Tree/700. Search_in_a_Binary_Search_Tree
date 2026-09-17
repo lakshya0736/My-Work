@@ -1,0 +1,10 @@
+class Solution {
+    public TreeNode searchBST(TreeNode root, int target) {
+        while(root!=null){
+            if(root.val>target) root = root.left;
+            else if(root.val<target) root = root.right;
+            else if(root.val==target) return root;
+        }
+        return null;
+    }
+}
