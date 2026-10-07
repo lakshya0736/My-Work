@@ -1,0 +1,17 @@
+class Solution {
+    public List<Integer> findMissingElements(int[] arr) {
+        List<Integer> ans = new ArrayList<>();
+        HashSet<Integer> set = new HashSet<>();
+        int max = arr[0];
+        int min = arr[0];
+        for(int ele : arr){
+            set.add(ele);
+            if(max<ele) max = ele;
+            if(min>ele) min = ele;
+        }
+        for(int i=min;i<=max;i++){
+            if(!set.contains(i)) ans.add(i);
+        }
+        return ans;
+    }
+}
