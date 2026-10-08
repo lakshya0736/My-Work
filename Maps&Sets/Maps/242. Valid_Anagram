@@ -1,0 +1,42 @@
+// class Solution {
+//     public boolean isAnagram(String s, String t) {
+//         if(s.length() != t.length()) return false;
+//         char[] arr1 = s.toCharArray();
+//         char[] arr2 = t.toCharArray();
+//         Arrays.sort(arr1);
+//         Arrays.sort(arr2);
+//         for(int i=0;i<arr2.length;i++){
+//             if(arr2[i]!=arr1[i]) return false;
+//         }
+//         return true;
+//     }
+// }
+
+class Solution {
+    public boolean isAnagram(String a, String b) {
+        if(a.length()!=b.length()) return false;
+        HashMap<Character, Integer> amap = new HashMap<>();
+        HashMap<Character, Integer> bmap = new HashMap<>();
+        for(int i=0;i<a.length();i++){
+            char ch = a.charAt(i);
+            if(amap.containsKey(ch)){
+                int freq = amap.get(ch);
+                amap.put(ch,freq+1);
+            }else amap.put(ch,1);
+        }
+        for(int i=0;i<b.length();i++){
+            char ch = b.charAt(i);
+            if(!amap.containsKey(ch)) return false;
+            if(bmap.containsKey(ch)){
+                int freq = bmap.get(ch);
+                bmap.put(ch,freq+1);
+            }else bmap.put(ch,1);
+        }
+        for(char key : amap.keySet()){
+           int bfreq = bmap.get(key);
+           int afreq = amap.get(key);
+           if(afreq!=bfreq) return false;
+        }
+        return true;
+    }
+}
