@@ -1,0 +1,64 @@
+class Triplet {
+    TreeNode node;
+    int col;
+    int row;
+
+    Triplet(TreeNode node, int col, int row) {
+        this.node = node;
+        this.col = col;
+        this.row = row;
+    }
+}
+class Solution {
+public List<List<Integer>> verticalTraversal(TreeNode root) {
+    List<List<Integer>> ans = new ArrayList<>();
+    HashMap<Integer, List<int[]>> map = new HashMap<>();
+    Queue<Triplet> q = new LinkedList<>();
+
+    q.add(new Triplet(root, 0, 0));
+
+    int mincol = Integer.MAX_VALUE;
+    int maxcol = Integer.MIN_VALUE;
+
+    while (q.size() > 0) {
+        Triplet front = q.remove();
+
+        TreeNode node = front.node;
+        int col = front.col;
+        int row = front.row;
+
+        mincol = Math.min(col, mincol);
+        maxcol = Math.max(col, maxcol);
+
+        map.putIfAbsent(col, new ArrayList<>());
+        map.get(col).add(new int[]{row, node.val});
+
+        if (node.left != null)
+            q.add(new Triplet(node.left, col - 1, row + 1));
+
+        if (node.right != null)
+            q.add(new Triplet(node.right, col + 1, row + 1));
+    }
+
+    for (int i = mincol; i <= maxcol; i++) {
+        List<int[]> list = map.get(i);
+
+        list.sort((a, b) -> {
+            if (a[0] != b[0])
+                return Integer.compare(a[0], b[0]);
+
+            return Integer.compare(a[1], b[1]);
+        });
+
+        List<Integer> temp = new ArrayList<>();
+
+        for (int[] ele : list) {
+            temp.add(ele[1]);
+        }
+
+        ans.add(temp);
+    }
+
+    return ans;
+}
+}
