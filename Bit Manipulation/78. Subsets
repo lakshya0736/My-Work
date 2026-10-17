@@ -1,0 +1,35 @@
+// class Solution {
+//     public List<List<Integer>> subsets(int[] arr) {
+//     List<List<Integer>> list = new ArrayList<>();
+//     subsets(new ArrayList<>(),arr,0,list);
+//     return list;
+//     }
+//     public void subsets(List<Integer> ans, int[] arr, int idx,List<List<Integer>> list){
+//         if(idx==arr.length){
+//             list.add(new ArrayList<>(ans));
+//             return;
+//         }
+//         ans.add(arr[idx]);
+//         subsets(ans,arr,idx+1,list);
+//         ans.remove(ans.size()-1); //pick
+//         subsets(ans,arr,idx+1,list); //skip
+//     }
+// }
+
+
+class Solution {
+    public List<List<Integer>> subsets(int[] arr) {
+    List<List<Integer>> list = new ArrayList<>();
+    List<List<Integer>> ans = new ArrayList<>();
+    int n = arr.length;
+    int m = 1<<n;
+    for(int i=0;i<m;i++){
+        ArrayList<Integer> a = new ArrayList<>();
+        for(int j=0;j<n;j++){
+            if((i>>j)%2==1) a.add(arr[j]);
+        }
+        ans.add(a);
+    }
+    return ans;
+    }
+}
