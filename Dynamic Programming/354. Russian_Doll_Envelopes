@@ -1,0 +1,23 @@
+class Solution {
+    public int maxEnvelopes(int[][] envelopes) {
+        Arrays.sort(envelopes, (a,b) -> (a[0]!=b[0]) ? Integer.compare(a[0],b[0]): Integer.compare(b[1],a[1]));
+        ArrayList<Integer> ans = new ArrayList<>();
+        for(int[] a : envelopes){
+            int ele = a[1];
+            if(ans.size()==0 || ele>ans.get(ans.size()-1)) ans.add(ele);
+            else replace(ele,ans);
+        }
+        return ans.size();
+    }
+    public void replace(int ele, ArrayList<Integer> ans){
+            int i=0, j=ans.size()-1, lb = -1;
+            while(i<=j){
+                int mid = i+(j-i)/2;
+                if(ans.get(mid)>=ele){
+                    lb = mid;
+                    j = mid-1;
+                }else i = mid+1;
+            }
+            ans.set(lb,ele);
+        }
+}
