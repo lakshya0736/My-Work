@@ -1,0 +1,32 @@
+class Solution {
+    public int shipWithinDays(int[] arr, int d) {
+        int max = Integer.MIN_VALUE, sum = 0;
+        for(int ele : arr){
+            max = Math.max(max,ele);
+            sum += ele;
+        }
+        int low = max, high = sum;
+        int ans = 0;
+        while(low<=high){
+            int mid = low + (high-low)/2;
+            if(days(mid,arr)<= d){
+                high = mid-1;
+                ans = mid;
+            }else low = mid+1;
+        }
+        return ans;
+    }
+    static int days(int capacity, int[] arr){
+        int count = 0;
+        int sum = capacity;
+        for(int ele : arr){
+            if(sum>=ele) sum-=ele;
+            else{
+                count++;
+                sum = capacity-ele;
+            }
+        }
+        count++;
+        return count;
+    }
+}
